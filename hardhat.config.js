@@ -39,6 +39,18 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: process.env.SNOWTRACE_API_KEY, // we use an .env file to hide our Snowtrace API KEY
+    apiKey: {
+      fuji: "avascan" // apiKey is not required, just set a placeholder
+    },
+    customChains: [
+      {
+        network: "fuji",
+        chainId: 43113,
+        urls: {
+          apiURL: "https://api.avascan.info/v2/network/testnet/evm/43113/etherscan",
+          browserURL: "https://testnet.avascan.info/blockchain/c"
+        }
+      }
+    ]
   },
 };
