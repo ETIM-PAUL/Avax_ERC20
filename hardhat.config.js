@@ -12,7 +12,7 @@ if (FORK_MAINNET) {
 }
 if (FORK_FUJI) {
   forkingData = {
-    url: "https://api.avax-test.network/ext/bc/C/rpc",
+    url: "https://api.sepolia.kroma.network",
   };
 }
 
@@ -25,22 +25,23 @@ module.exports = {
       chainId: !forkingData ? 43112 : undefined, //Only specify a chainId if we are not forking
       forking: forkingData,
     },
+    sepolia: {
+      url: "https://eth-sepolia.g.alchemy.com/v2/PN7ox_cWivKpFnRnE5YKoJ5Vyp8-Bx5j",
+      gasPrice: 225000000000,
+      chainId: 11155111,
+      accounts: [process.env.WALLET_PRIVATE_KEY], // we use a .env file to hide our wallets private key
+    },
     fuji: {
       url: "https://api.avax-test.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43113,
       accounts: [process.env.WALLET_PRIVATE_KEY], // we use a .env file to hide our wallets private key
     },
-    mainnet: {
-      url: "https://api.avax.network/ext/bc/C/rpc",
-      gasPrice: 225000000000,
-      chainId: 43114,
-      accounts: [process.env.WALLET_PRIVATE_KEY],
-    },
   },
   etherscan: {
     apiKey: {
-      fuji: "avascan" // apiKey is not required, just set a placeholder
+      fuji: "avascan", // apiKey is not required, just set a placeholder
+      sepolia: "8VWGCW9PI2P8QT1CTTDQPA5Y44YMMSJGCA"
     },
     customChains: [
       {
