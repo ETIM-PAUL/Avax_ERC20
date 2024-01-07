@@ -7,6 +7,16 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract DegenToken is ERC20, Ownable {
     error InvalidItem();
 
+    struct Player {
+        address account;
+        uint level;
+        string item;
+    }
+
+    mapping(address => bool) playerExist;
+    mapping(InGameItems => Player) playerItem;
+    mapping(address => Player) playerDetails;
+
     enum InGameItems {
         SuperHero,
         BestVillian,
@@ -19,34 +29,87 @@ contract DegenToken is ERC20, Ownable {
     constructor() Ownable() ERC20("Degen", "DGN") {}
 
     function mint(address to, uint256 amount) public onlyOwner {
+        if (playerExist[to] == false) {
+            revert("Please Register as a Player");
+        }
         _mint(to, amount);
     }
 
-    function burn(address account, uint256 value) public {
-        _burn(account, value);
+    function register() public view returns (bool success) {
+        playerExist[msg.sender] == true;
+        success = true;
     }
 
-    function redeemTokens(InGameItems _ingame) public {
-        if (_ingame > InGameItems.FreshFinisher) {
-            revert InvalidItem();
+    function burn(uint256 value) public {
+        if (playerExist[msg.sender] == false) {
+            revert("Please Register as a Player");
         }
-        if (_ingame == InGameItems.SuperHero) {
+        _burn(msg.sender, value);
+    }
+
+    function moveLevel(address _player, uint _newLevel) public onlyOwner {
+        Player storage player = playerDetails[_player];
+        player.level = _newLevel;
+        _mint(msg.sender, 50);
+    }
+
+    function giveItem(address _player, string memory _item) public onlyOwner {
+        Player storage player = playerDetails[_player];
+        player.item = _item;
+        _mint(msg.sender, 50);
+    }
+
+    function redeemTokens(string memory _item) public {
+        Player storage player = playerDetails[msg.sender];
+
+        //SuperHero
+        if (
+            keccak256(abi.encodePacked(_item)) ==
+            keccak256(abi.encodePacked(player.item))
+        ) {
             _mint(msg.sender, 400);
         }
-        if (_ingame == InGameItems.BestVillian) {
-            _mint(msg.sender, 200);
+
+        //BestVillian
+        if (
+            keccak256(abi.encodePacked(_item)) ==
+            keccak256(abi.encodePacked(player.item))
+        ) {
+            _mint(msg.sender, 400);
         }
-        if (_ingame == InGameItems.HighestWin) {
-            _mint(msg.sender, 70);
+
+        //HighestWin
+        if (
+            keccak256(abi.encodePacked(_item)) ==
+            keccak256(abi.encodePacked(player.item))
+        ) {
+            _mint(msg.sender, 400);
         }
-        if (_ingame == InGameItems.BestCaptain) {
-            _mint(msg.sender, 100);
+
+        //BestCaptain
+        if (
+            keccak256(abi.encodePacked(_item)) ==
+            keccak256(abi.encodePacked(player.item))
+        ) {
+            _mint(msg.sender, 400);
         }
-        if (_ingame == InGameItems.TopGunner) {
-            _mint(msg.sender, 250);
+
+        //TopGunner
+        if (
+            keccak256(abi.encodePacked(_item)) ==
+            keccak256(abi.encodePacked(player.item))
+        ) {
+            _mint(msg.sender, 400);
         }
-        if (_ingame == InGameItems.FreshFinisher) {
-            _mint(msg.sender, 300);
+
+        //FreshFinisher
+        if (
+            keccak256(abi.encodePacked(_item)) ==
+            keccak256(abi.encodePacked(player.item))
+        ) {
+            _mint(msg.sender, 400);
+        } else {
+            revert("Invalid Item");
         }
     }
 }
