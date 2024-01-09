@@ -7,7 +7,7 @@ Some added functionalities include moving levels up and getting rewarded with th
 
 This contract is deployed to sepolia (No testnet to deploy and interact with it on Avalanche network, so I had to deploy to sepolia). It has also been verified.
 
-contract address - 0xfaa03d2b8BB4C9E0532E981B7F038aF9dFb9BaAe
+contract address - 0x30298cb1Da58Ee04a5f67ca17085256595C0C008
 
 ### Author
 

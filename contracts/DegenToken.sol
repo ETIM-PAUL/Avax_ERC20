@@ -13,18 +13,8 @@ contract DegenToken is ERC20, Ownable {
         string item;
     }
 
-    mapping(address => bool) playerExist;
-    mapping(InGameItems => Player) playerItem;
-    mapping(address => Player) playerDetails;
-
-    enum InGameItems {
-        SuperHero,
-        BestVillian,
-        HighestWin,
-        BestCaptain,
-        TopGunner,
-        FreshFinisher
-    }
+    mapping(address => bool) public playerExist;
+    mapping(address => Player) public playerDetails;
 
     constructor() Ownable() ERC20("Degen", "DGN") {}
 
@@ -35,8 +25,14 @@ contract DegenToken is ERC20, Ownable {
         _mint(to, amount);
     }
 
-    function register() public view returns (bool success) {
-        playerExist[msg.sender] == true;
+    function register(address newPlayer) public returns (bool success) {
+        if (playerExist[newPlayer] == true) {
+            revert("Already Registered");
+        }
+        Player storage player = playerDetails[msg.sender];
+        playerExist[newPlayer] = true;
+        player.account = newPlayer;
+        player.level = 1;
         success = true;
     }
 
@@ -48,68 +44,76 @@ contract DegenToken is ERC20, Ownable {
     }
 
     function moveLevel(address _player, uint _newLevel) public onlyOwner {
+        if (playerExist[msg.sender] == false) {
+            revert("Please Register as a Player");
+        }
         Player storage player = playerDetails[_player];
         player.level = _newLevel;
         _mint(msg.sender, 50);
     }
 
     function giveItem(address _player, string memory _item) public onlyOwner {
+        if (playerExist[_player] == false) {
+            revert("Please Register as a Player");
+        }
         Player storage player = playerDetails[_player];
         player.item = _item;
-        _mint(msg.sender, 50);
     }
 
-    function redeemTokens(string memory _item) public {
-        Player storage player = playerDetails[msg.sender];
+    function returnItem() public view returns (string memory it) {
+        Player memory player = playerDetails[msg.sender];
+        it = player.item;
+    }
+
+    function redeemTokens() public {
+        Player memory player = playerDetails[msg.sender];
 
         //SuperHero
         if (
-            keccak256(abi.encodePacked(_item)) ==
-            keccak256(abi.encodePacked(player.item))
+            keccak256(abi.encodePacked(player.item)) ==
+            keccak256(abi.encodePacked("SuperHero"))
         ) {
             _mint(msg.sender, 400);
         }
 
         //BestVillian
         if (
-            keccak256(abi.encodePacked(_item)) ==
-            keccak256(abi.encodePacked(player.item))
+            keccak256(abi.encodePacked(player.item)) ==
+            keccak256(abi.encodePacked("BestVillian"))
         ) {
-            _mint(msg.sender, 400);
+            _mint(msg.sender, 1000);
         }
 
         //HighestWin
         if (
-            keccak256(abi.encodePacked(_item)) ==
-            keccak256(abi.encodePacked(player.item))
+            keccak256(abi.encodePacked(player.item)) ==
+            keccak256(abi.encodePacked("HighestWin"))
         ) {
-            _mint(msg.sender, 400);
+            _mint(msg.sender, 1200);
         }
 
         //BestCaptain
         if (
-            keccak256(abi.encodePacked(_item)) ==
-            keccak256(abi.encodePacked(player.item))
+            keccak256(abi.encodePacked(player.item)) ==
+            keccak256(abi.encodePacked("BestCaptain"))
         ) {
-            _mint(msg.sender, 400);
+            _mint(msg.sender, 1500);
         }
 
         //TopGunner
         if (
-            keccak256(abi.encodePacked(_item)) ==
-            keccak256(abi.encodePacked(player.item))
+            keccak256(abi.encodePacked(player.item)) ==
+            keccak256(abi.encodePacked("TopGunner"))
         ) {
-            _mint(msg.sender, 400);
+            _mint(msg.sender, 2000);
         }
 
         //FreshFinisher
         if (
-            keccak256(abi.encodePacked(_item)) ==
-            keccak256(abi.encodePacked(player.item))
+            keccak256(abi.encodePacked(player.item)) ==
+            keccak256(abi.encodePacked("FreshFinisher"))
         ) {
-            _mint(msg.sender, 400);
-        } else {
-            revert("Invalid Item");
+            _mint(msg.sender, 1800);
         }
     }
 }
